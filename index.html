@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<head>
+  <script type="text/javascript">
+    function updateLink() {
+      var value = document.querySelector("#link-maker").value;
+      var link = `https://obsidian-link.exultantsoftware.com/r.html?${value}`;
+      link = `http://localhost:8098/r.html?${value}`;
+      var linkReference = document.querySelector("#link-output");
+      linkReference.href = link;
+      linkReference.innerText = link;
+    }
+  </script>
+</head>
+<body>
+  <h1>Obsidian Link Maker</h1>
+  <p>Insert the Obsidian link below to create the shareable link.</p>
+  <input id="link-maker" />
+  <button onclick="updateLink()">Update</button>
+  <a id="link-output" href="#">None yet</a>
+</body>
