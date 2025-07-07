@@ -1,0 +1,109 @@
+<% content_for :head do %>
+<style>
+  .output-area {
+    width: 100%;
+    display: flex;
+    background-color: white;
+    border-radius: var(--border-radius);
+    align-items: center;
+    padding: var(--gap);
+    box-sizing: border-box;
+    margin-top: calc(var(--gap) * 2);
+    gap: var(--gap);
+  }
+
+  #link-output {
+    flex: 1;
+  }
+
+  .output-area:has(#link-output[href="#"]) {
+    display: none;
+  }
+
+  .input-area {
+    width: 100%;
+    display: flex;
+
+    & input {
+      flex: 1;
+    }
+  }
+</style>
+<% end %>
+
+<header>
+  <h1>Obsidian Link Maker</h1>
+</header>
+<section class="main">
+  <p>Insert the Obsidian link below to create the shareable link.</p>
+  <div class="input-area">
+    <input id="link-maker" />
+    <button id="update-link-btn">Update</button>
+  </div>
+  <div class="output-area">
+    <a id="link-output" href="#">None yet</a>
+    <button id="copy-button">Copy</button>
+    <button id="share-button">Share</button>
+  </div>
+</section>
+
+<% content_for :javascript do %>
+<script type="text/javascript">
+  const obsidianUrlRegex = /obsidian:\/\/open\?vault=([^&]+)&file=([^&]+)/;
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("link-maker");
+    const btn = document.getElementById("update-link-btn");
+    const output = document.getElementById("link-output");
+    const host = input.dataset.host;
+    const copy = document.getElementById("copy-button");
+    const share = document.getElementById("share-button");
+    let outputLink = "";
+
+    btn.addEventListener("click", function () {
+      const value = document.querySelector("#link-maker").value;
+      const match = value.match(obsidianUrlRegex);
+      if (!match) {
+        alert(
+          "Invalid Obsidian link format. Please use the format: obsidian://open?vault=VAULT_NAME&file=FILE_NAME"
+        );
+        return;
+      }
+
+      if (match[1] !== "<%= @vault_name %>") {
+        alert(
+          `Invalid vault name. Expected: <%= @vault_name %>, but got: ${match[1]}`
+        );
+        return;
+      }
+
+      let file = match ? match[2] : null;
+      file = encodeURI(decodeURIComponent(file));
+
+      const link = `<%= @host %>/r/${file}`;
+      const linkReference = document.querySelector("#link-output");
+      linkReference.href = link;
+      linkReference.innerText = link;
+      outputLink = link;
+    });
+
+    copy.addEventListener("click", async function () {
+      try {
+        await navigator.clipboard.writeText(outputLink);
+        alert("Link copied to clipboard!");
+      } catch (err) {
+        console.error(err);
+        alert("Failed to copy link. Please try again.");
+      }
+    });
+
+    share.addEventListener("click", async function () {
+      try {
+        await navigator.share({ url: outputLink });
+      } catch (err) {
+        console.err(err);
+      }
+    });
+  });
+</script>
+<% end %>
