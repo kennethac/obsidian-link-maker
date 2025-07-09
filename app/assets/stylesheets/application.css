@@ -41,7 +41,7 @@ section.main {
 }
 
 input {
-  font-size: 1.5rem;
+  font-size: 1rem;
   padding: var(--gap);
   border-radius: var(--border-radius);
 }
@@ -52,7 +52,7 @@ button {
   padding: 0.25rem;
   box-shadow: none;
   border-radius: var(--border-radius);
-  font-size: 2rem;
+  font-size: 1rem;
 }
 
 a {

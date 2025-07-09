@@ -14,6 +14,7 @@
 
   #link-output {
     flex: 1;
+    word-break: break-all;
   }
 
   .output-area:has(#link-output[href="#"]) {
@@ -28,6 +29,29 @@
       flex: 1;
     }
   }
+
+  #link-maker:has(+ button) {
+    border-end-end-radius: 0;
+    border-start-end-radius: 0;
+  }
+  #link-maker + button{
+    border-end-start-radius: 0;
+    border-start-start-radius: 0;
+  }
+
+  @media screen and (max-width: 418px) {
+    #link-maker + button {
+      display: none;
+    }
+  #link-maker:has(+ button) {
+    border-end-end-radius: var(--border-radius);
+    border-start-end-radius: var(--border-radius);
+  }
+  #link-maker + button{
+    border-end-start-radius: var(--border-radius);
+    border-start-start-radius: var(--border-radius);
+  }
+  }
 </style>
 <% end %>
 
@@ -35,7 +59,7 @@
   <h1>Obsidian Link Maker</h1>
 </header>
 <section class="main">
-  <p>Insert the Obsidian link below to create the shareable link.</p>
+  <p>Insert the Obsidian link below to create the shareable link!</p>
   <div class="input-area">
     <input id="link-maker" />
     <button id="update-link-btn">Update</button>
@@ -53,39 +77,41 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     const input = document.getElementById("link-maker");
-    const btn = document.getElementById("update-link-btn");
+    const updatebuttons = document.querySelectorAll("#update-link-btn");
     const output = document.getElementById("link-output");
     const host = input.dataset.host;
     const copy = document.getElementById("copy-button");
     const share = document.getElementById("share-button");
     let outputLink = "";
 
-    btn.addEventListener("click", function () {
-      const value = document.querySelector("#link-maker").value;
-      const match = value.match(obsidianUrlRegex);
-      if (!match) {
-        alert(
-          "Invalid Obsidian link format. Please use the format: obsidian://open?vault=VAULT_NAME&file=FILE_NAME"
-        );
-        return;
-      }
+    for (const btn of updatebuttons) {
+      btn.addEventListener("click", function () {
+        const value = document.querySelector("#link-maker").value;
+        const match = value.match(obsidianUrlRegex);
+        if (!match) {
+          alert(
+            "Invalid Obsidian link format. Please use the format: obsidian://open?vault=VAULT_NAME&file=FILE_NAME"
+          );
+          return;
+        }
 
-      if (match[1] !== "<%= @vault_name %>") {
-        alert(
-          `Invalid vault name. Expected: <%= @vault_name %>, but got: ${match[1]}`
-        );
-        return;
-      }
+        if (match[1] !== "<%= @vault_name %>") {
+          alert(
+            `Invalid vault name. Expected: <%= @vault_name %>, but got: ${match[1]}`
+          );
+          return;
+        }
 
-      let file = match ? match[2] : null;
-      file = encodeURI(decodeURIComponent(file));
+        let file = match ? match[2] : null;
+        file = encodeURI(decodeURIComponent(file));
 
-      const link = `<%= @host %>/r/${file}`;
-      const linkReference = document.querySelector("#link-output");
-      linkReference.href = link;
-      linkReference.innerText = link;
-      outputLink = link;
-    });
+        const link = `<%= @host %>/r/${file}`;
+        const linkReference = document.querySelector("#link-output");
+        linkReference.href = link;
+        linkReference.innerText = link;
+        outputLink = link;
+      });
+    }
 
     copy.addEventListener("click", async function () {
       try {
