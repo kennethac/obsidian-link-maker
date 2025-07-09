@@ -24,45 +24,28 @@
   .input-area {
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+    /* align-items: space-between; */
+    justify-content: center;
 
     & input {
       flex: 1;
+      min-width: 80%;
     }
-  }
 
-  #link-maker:has(+ button) {
-    border-end-end-radius: 0;
-    border-start-end-radius: 0;
-  }
-  #link-maker + button{
-    border-end-start-radius: 0;
-    border-start-start-radius: 0;
-  }
-
-  @media screen and (max-width: 418px) {
-    #link-maker + button {
-      display: none;
+    & button {
+      padding: 1rem;
     }
-  #link-maker:has(+ button) {
-    border-end-end-radius: var(--border-radius);
-    border-start-end-radius: var(--border-radius);
-  }
-  #link-maker + button{
-    border-end-start-radius: var(--border-radius);
-    border-start-start-radius: var(--border-radius);
-  }
   }
 </style>
 <% end %>
 
-<header>
-  <h1>Obsidian Link Maker</h1>
-</header>
 <section class="main">
   <p>Insert the Obsidian link below to create the shareable link!</p>
   <div class="input-area">
     <input id="link-maker" />
-    <button id="update-link-btn">Update</button>
+    <button class="update-link-btn">Update</button>
   </div>
   <div class="output-area">
     <a id="link-output" href="#">None yet</a>
@@ -77,7 +60,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     const input = document.getElementById("link-maker");
-    const updatebuttons = document.querySelectorAll("#update-link-btn");
+    const updatebuttons = document.querySelectorAll(".update-link-btn");
     const output = document.getElementById("link-output");
     const host = input.dataset.host;
     const copy = document.getElementById("copy-button");

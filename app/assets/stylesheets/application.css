@@ -28,6 +28,26 @@ body {
   font-size: 18px;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  & > main {
+    flex-grow: 1;
+  }
+
+  & > footer {
+    color: white;
+    padding-block: var(--gap);
+    text-align: center;
+
+    & a {
+      color: white;
+    }
+  }
+}
+
 header {
   background-color: var(--primary-color);
   color: var(--text-color);
